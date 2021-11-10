@@ -22,7 +22,11 @@ Wall class:
   
   discretize(fn)
 
-  compute_field
+  init_fields
+  
+  compute_fields(position)
+  
+  plot
 
 
 
