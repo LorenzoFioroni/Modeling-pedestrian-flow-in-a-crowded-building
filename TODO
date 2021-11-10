@@ -1,4 +1,20 @@
-Environment class:
+Wall class:
+  
+  point A, B
+ 
+  radius
+  
+  project(P)
+  
+  
+ 
+ Obstacle class:
+  
+  center, radius
+ 
+ 
+  
+ Environment class:
   
   add_wall
   
