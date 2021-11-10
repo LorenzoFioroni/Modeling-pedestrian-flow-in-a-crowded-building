@@ -1,0 +1,36 @@
+Environment class:
+  
+  add_wall
+  
+  add_obstacle
+  
+  discretize(fn)
+
+  compute_field
+
+
+
+Agent class:
+  
+  init (t0)
+  
+  compute_force (env, active_agents)
+  
+  vision_renormalization
+  
+  move
+  
+  
+  
+ Simulation class:
+ 
+  init (env)
+    self.active_agents
+    self.inactive_agents
+  
+  add_agent -> active_agents
+  
+  integration_step (computes forces for each agent and then move them)
+    when agent returns None -> move to inactive and add new one
+  
+  plot
