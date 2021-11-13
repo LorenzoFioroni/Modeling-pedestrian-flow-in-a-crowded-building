@@ -144,7 +144,12 @@ class Environment():
                 saturated_field = np.moveaxis(saturated_field, 2, 0)
 
             plt.imshow(la.norm(saturated_field, axis=0).T, origin="lower", interpolation="bilinear", extent=[*self.padded_bounds[::2], *self.padded_bounds[1::2]])
-            plt.colorbar()
+            cbar = plt.colorbar()
+            cbar.set_label("Force intensity")
+            fig.canvas.draw()
+            labels = cbar.ax.get_yticklabels()
+            labels[-1].set_text(f"$\geq${labels[-1].get_text()}")
+            cbar.ax.set_yticklabels(labels)
 
             if plot_grid:
                 plt.scatter(*self.grid, marker=".", color="orange")
