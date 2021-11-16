@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d
 import numpy.linalg as la
+from tqdm import tqdm
 
 class Wall():
     def __init__(self, p1, p2, decay_length=1, intensity=1):
@@ -96,6 +97,9 @@ class Environment():
                 ))
 
     def compile(self):
+
+        print("Compiling the model...")
+
         n = ((self.bounds[2:4] - self.bounds[0:2]) // self.dl).astype(int) + 1
         delta = (self.bounds[2:4] - self.bounds[0:2]) / n
         
@@ -111,13 +115,15 @@ class Environment():
         self.grid = np.stack([*np.meshgrid(self.x, self.y, indexing="ij")])
         self.field = np.zeros_like(self.grid)
 
-        for w in self.walls:
+        for w in tqdm(self.walls):
             self.field += w.I * (self.grid - w.project(self.grid)) / la.norm(self.grid - w.project(self.grid), axis=0)**2 * np.exp(-la.norm(self.grid - w.project(self.grid), axis=0)/w.R)
-        for o in self.obstacles:
+        for o in tqdm(self.obstacles):
             self.field += o.I*(self.grid - o.p[:,None,None]) / la.norm(self.grid - o.p[:, None, None], axis=0)**2 * np.exp(-la.norm(self.grid - o.p[:, None, None], axis=0)/o.R)
 
-        self.interp_x = interp2d(self.x,self.y, (self.field[0,:,:]).T)
-        self.interp_y = interp2d(self.x,self.y, (self.field[1,:,:]).T)
+        self.interp_x = interp2d(self.x[:],self.y[:], (self.field[0,:,:]).T,kind="quintic")
+        self.interp_y = interp2d(self.x[:],self.y[:], (self.field[1,:,:]).T,kind="quintic")
+
+        print("The model has successfully been compiled")
 
         self.compiled = True
 
@@ -177,5 +183,7 @@ class Environment():
 
     def get_field(self, position):
         if self.compiled == False: raise Exception("You have to compile the model first")
-        return np.array([self.interp_x(*position), self.interp_y(*position)])
+        return np.array([self.interp_x(*position)[0], self.interp_y(*position)[0]])
+
+
 
