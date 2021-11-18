@@ -27,7 +27,7 @@ class Simulation():
     def add_agents(self, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1,
                  sigma = 0.3):
 
-        self.active_agents.append(Agent("a" + str(self.agent_number + 1), env, self.time,
+        self.active_agents.append(Agent("a" + str(self.agent_number + 1), self.env, self.time,
                                         position, goal_position, desired_speed=np.random.normal(1.34, 0.26),
                                         relaxation_time=0.5, V=2.1,
                                         sigma=0.3))
@@ -60,7 +60,7 @@ class Simulation():
 
     def plot(self, plot_field=True, plot_arrows=False, plot_grid=False, plot_agents=True, show=True):
 
-        fig = env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
+        fig = self.env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
         if plot_agents:
             for a in self.inactive_agents:
                 fig = a.plot_trajectory(fig, show=False)
@@ -74,7 +74,7 @@ class Simulation():
 
         N = int(self.time / self.delta)
         for i in range(N):
-            fig = env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
+            fig = self.env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
             for a in self.inactive_agents:
                 if i < len(a.pos):
                     plt.scatter(a.pos[i][0], a.pos[i][1], label="agent " + a.id)
@@ -98,20 +98,5 @@ class Simulation():
             for a in self.inactive_agents:
                 mean += (a.end_time - a.start_time)
 
-        return mean
+        return mean / len(self.inactive_agents)
 
-env = Environment(discretization_length=0.1)
-
-fun1 = lambda x: np.vstack((x, np.sin(x) + 0.5 * x + 1))
-fun2 = lambda x: np.vstack((x, np.sin(x) + 0.5 * x - 1))
-env.add_wall_from_curve(fun1, start = 0, end = 2 * np.pi, step_length=0.1, decay_length=0.2, intensity=10)
-env.add_wall_from_curve(fun2, start = 0, end = 2 * np.pi, step_length=0.1, decay_length=0.2, intensity=10)
-
-a1 = Agent("a", env, 0, np.array([0.3, 0]), np.array([2*np.pi-0.3, np.pi]), sigma=0.3, relaxation_time=0.5)
-a2 = Agent("b", env, 0, np.array([4, 0.8]), np.array([1.98, 2.47]), sigma=0.3, relaxation_time=0.5)
-a3 = Agent("c", env, 0, np.array([0.5, 0]), np.array([2*np.pi-0.3, np.pi]), sigma=0.3, relaxation_time=0.5)
-
-sim = Simulation(env, [a1, a2, a3], 0.01)
-sim.move_to_goal()
-sim.plot()
-sim.mean_TimeToGoal()
