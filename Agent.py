@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import numpy.linalg as la
 
+
 class Agent:
 
     ARRIVED = 1
     NOT_ARRIVED = 0
-    
-    def __init__(self, id, env, start_time, position, relaxation_time, max_speed, goal_position, desired_speed, V, sigma):
+
+    def __init__(self, id, env, start_time, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1,
+                 sigma = 0.3):
 
         self.id = id
         self.env = env
@@ -19,8 +21,8 @@ class Agent:
         self.relaxation_time = relaxation_time
         self.start_time = start_time
 
-        self.max_speed = max_speed
         self.desired_speed = desired_speed
+        self.max_speed = 1.3 * self.desired_speed
         self.speed = [np.zeros(2)]
 
         self.V = V
@@ -36,40 +38,42 @@ class Agent:
         self.F += self.env.get_field(self.pos[-1])
 
         for agent in active_agents:
-
             v = la.norm(agent.speed[-1])
+            v_ = v * agent.desired_direction * delta
             r = self.pos[-1] - agent.pos[-1]
             norm_r = la.norm(r)
-            norm_r_ = la.norm(r - v * agent.desired_direction * delta)
-            b = np.sqrt((norm_r + norm_r_) ** 2 - v ** 2) / 2
+            norm_r_ = la.norm(r - v_)
+            b = np.sqrt((norm_r + norm_r_) ** 2 - (v * delta) ** 2) / 2
 
-            self.F += r * (2 + (norm_r_ / norm_r) + (norm_r / norm_r_)) * np.exp(-b / agent.sigma) * self.V / (b * agent.sigma * 4)
+            self.F += (r * (2 + (norm_r_ / norm_r) + (norm_r / norm_r_)) - v_ * (1 + (norm_r / norm_r_))) \
+                      * np.exp(-b / agent.sigma) * self.V / (b * agent.sigma * 4)
+
 
         theta = np.radians(np.random.normal(scale=self.fluctuaction_deviation))
-        self.F = np.dot(np.array(((np.cos(theta), -np.sin(theta)),(np.sin(theta),np.cos(theta)))), self.F)
+        self.F = np.dot(np.array(((np.cos(theta), -np.sin(theta)), (np.sin(theta), np.cos(theta)))), self.F)
 
         return self.F
 
     def move(self, active_agents, delta, current_time):
 
-            new_speed = self.speed[-1] + delta * self.compute_force(active_agents, delta)
-            if la.norm(new_speed) != 0:
-                if la.norm(new_speed) <= self.max_speed:
-                    self.speed.append(new_speed)
-                else:
-                    self.speed.append(new_speed * self.max_speed / la.norm(new_speed))
+        new_speed = self.speed[-1] + delta * self.compute_force(active_agents, delta)
+        if la.norm(new_speed) != 0:
+            if la.norm(new_speed) <= self.max_speed:
+                self.speed.append(new_speed)
             else:
-                self.speed.append(np.zeros(2))
+                self.speed.append(new_speed * self.max_speed / la.norm(new_speed))
+        else:
+            self.speed.append(np.zeros(2))
 
-            if delta * la.norm(self.speed[-1]) >= la.norm(self.goal_position-self.pos[-1]):
-                self.pos.append(self.goal_position)
-                self.end_time = current_time
-                return Agent.ARRIVED
+        if delta * la.norm(self.speed[-1]) >= la.norm(self.goal_position - self.pos[-1]) or la.norm(self.goal_position - self.pos[-1]) <= 0.2:
+            self.pos.append(self.goal_position)
+            self.end_time = current_time
+            return Agent.ARRIVED
 
-            else:
-                self.pos.append( self.pos[-1] + delta * self.speed[-1])
-                self.desired_direction = (self.goal_position - self.pos[-1]) / la.norm(self.goal_position - self.pos[-1])
-                return Agent.NOT_ARRIVED
+        else:
+            self.pos.append(self.pos[-1] + delta * self.speed[-1])
+            self.desired_direction = (self.goal_position - self.pos[-1]) / la.norm(self.goal_position - self.pos[-1])
+            return Agent.NOT_ARRIVED
 
     def plot_trajectory(self, fig, show=True):
 
@@ -83,21 +87,3 @@ class Agent:
         else:
             return fig
 
-
-
-    # def add_wall_from_segments(self, start, end, refinement):
-    #     #start has to be a N by 2 np.array with N being the numbers of segments used
-    #     N = start.shape[0]
-    #     for i in range(N):
-    #         x_d = np.hstack((np.arange(start[i, 0], end[i, 0], refinement * 0.5), end[i, 0]))
-    #         y_d = np.hstack((np.arange(start[i, 1], end[i, 1], refinement * 0.5), end[i, 1]))
-    #         for j in range(x_d.shape[0]):
-    #             self.add_wall()
-
-    # def add_wall_from_curve(self, fun, start, end, refinement):
-
-    #     #fun has to be a 1-dim parametrization of the curve defining the wall, and provided a set of N points return
-    #     # a N by 2 np array
-    #     d = fun(np.hstack((np.arange(start, end, refinement), end)))
-    #     for i in range(d.shape[0]):
-    #         self.add_wall()
