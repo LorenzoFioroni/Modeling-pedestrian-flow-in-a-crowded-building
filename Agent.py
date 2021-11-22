@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import numpy.linalg as la
+import warnings
+warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 
 
 class Agent:
@@ -8,8 +10,7 @@ class Agent:
     ARRIVED = 1
     NOT_ARRIVED = 0
 
-    def __init__(self, id, env, start_time, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1,
-                 sigma = 0.3):
+    def __init__(self, env, start_time, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1, sigma = 0.3, id=None):
 
         self.id = id
         self.env = env
@@ -87,3 +88,6 @@ class Agent:
         else:
             return fig
 
+
+    def __repr__(self):
+        return self.id or "unknown"

@@ -1,66 +1,76 @@
 import numpy as np
-import matplotlib.animation as animation
 from Environment import *
 from Agent import *
+import os
+from itertools import chain
+import warnings
+warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
+from datetime import timedelta
 
 class Simulation():
 
-    def __init__(self, env, active_agents, delta):
+    def __init__(self, env, time_step):
 
         self.time = 0
-        self.delta = delta
+        self.dt = time_step
         self.env = env
-        self.active_agents = active_agents
+        self.active_agents = []
         self.inactive_agents = []
-        self.agent_number = int(len(active_agents))
+        self.sleeping_agents = []
+        self.agent_number = 0
         self.arrived_number = [0]
 
         if not self.env.compiled:
             self.env.compile()
 
-    def optimal_TimeToGoal(self, agent):
-
-        env_local = Simulation(self.env, [agent], self.delta)
-        env_local.move_to_goal()
-        return env_local.inactive_agents[0].end_time
-
-    def add_agents(self, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1,
-                 sigma = 0.3):
-
-        self.active_agents.append(Agent("a" + str(self.agent_number + 1), self.env, self.time,
-                                        position, goal_position, desired_speed=np.random.normal(1.34, 0.26),
-                                        relaxation_time=0.5, V=2.1,
-                                        sigma=0.3))
+    def add_agent(self, agent):
+        if agent.id is None:
+            agent.id = f"a{self.agent_number+1}"
+        self.sleeping_agents.append(agent)
         self.agent_number += 1
-
+    
     def move(self, replace=False):
 
         self.arrived_number.append(self.arrived_number[-1])
-        for o in range(len(self.active_agents)):
 
-            agent = self.active_agents[0]
-            del self.active_agents[0]
+        for a in range(len(self.active_agents)):
 
-            if agent.move(self.active_agents, self.delta, self.time):
+            agent = self.active_agents.pop(0)
+
+            if agent.move(self.active_agents, self.dt, self.time) == Agent.ARRIVED:
                 self.inactive_agents.append(agent)
                 self.arrived_number[-1] += 1
                 if replace:
-                    self.active_agents.append(Agent(agent.id, self.env, start_time=self.time, position=agent.pos[0],
-                                                    goal_position=agent.goal_position, desired_speed=agent.desired_speed,
-                                                    relaxation_time=agent.relaxation_time, V=agent.V, sigma=agent.sigma))
-
+                    self.add_agent(Agent(
+                        self.env,
+                        start_time=self.time,
+                        position = agent.pos[0],
+                        goal_position=agent.goal_position,
+                        desired_speed=agent.desired_speed,
+                        relaxation_time=agent.relaxation_time,
+                        V = agent.V,
+                        sigma = agent.sigma
+                    ))
             else:
                 self.active_agents.append(agent)
 
-    def move_to_goal(self, t_max=np.inf, replace=False):
+    def run(self, t_max=np.inf, replace=False):
 
-        while (len(self.active_agents) != 0 and self.time <= (t_max - self.delta)):
+        while (self.agent_number - len(self.inactive_agents) != 0 and self.time <= (t_max - self.dt)):
+
+            for i in range(len(self.sleeping_agents)):
+                a = self.sleeping_agents.pop(0)
+                if a.start_time <= self.time:
+                    self.active_agents.append(a)
+                else:
+                    self.sleeping_agents.append(a)
+
             self.move(replace)
-            self.time += self.delta
+            self.time += self.dt
 
     def plot(self, plot_field=True, plot_arrows=False, plot_grid=False, plot_agents=True, show=True):
 
-        fig = self.env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
+        fig = self.env.plot(plot_field=plot_field, plot_arrows=plot_arrows, plot_grid=plot_grid, show=False)
         if plot_agents:
             for a in self.inactive_agents:
                 fig = a.plot_trajectory(fig, show=False)
@@ -70,20 +80,39 @@ class Simulation():
         else:
             return fig
 
-    def save_frames(self, plot_field=True, plot_arrows=False, plot_grid=False, plot_agents=True):
+    def save_frames(self, plot_field=True, plot_arrows=False, plot_grid=False, path=os.path.join(os.getcwd(),"animation")):
 
-        N = int(self.time / self.delta)
-        for i in range(N):
-            fig = self.env.plot(plot_field=True, plot_arrows=False, plot_grid=False, show=False)
-            for a in self.inactive_agents:
-                if i < len(a.pos):
-                    plt.scatter(a.pos[i][0], a.pos[i][1], label="agent " + a.id)
-                else:
-                    plt.scatter(a.goal_position[0], a.goal_position[1], label="agent " + a.id)
+        N = int(self.time / self.dt)
+        if not(os.path.exists(path) and os.path.isdir(path)):
+                os.makedirs(path)
+        pattern = os.path.join(path, "frame_*.png")
+        os.system(f"rm {pattern}")
+        print(f"Saving the frames of the animation in folder {path}")
+
+        for i, t in tqdm(enumerate(np.linspace(0, self.time, N)), total=N):
+            fig = self.env.plot(plot_field=plot_field, plot_arrows=plot_arrows, plot_grid=plot_grid, show=False)
+            for a in chain(self.inactive_agents, self.active_agents):
+
+                zero = int(np.floor(a.start_time/self.dt))
+                if 0 <= i-zero < len(a.pos):
+                    plt.scatter(*a.pos[i-zero], label=f"Agent {a.id}")
+
             plt.legend()
-            plt.savefig("Frame/frame" + str(i) + ".png", )
+            isec, fsec = divmod(round(t*100), 100)
+            plt.title(f"{timedelta(seconds=isec)}.{fsec:02.0f}")
+            plt.savefig(os.path.join(path, f"frame_{i}.png"))
             plt.close(fig)
-            print("Frame at time " + str(i * self.delta) + "/" + str(self.time) + " saved.")
+
+        pattern = os.path.join(path, "frame_%01d.png")
+        target = os.path.join(path, "Animation.mp4")
+        print("All the frames have been generated. You can merge them in a video using ffmpeg with the following command:")
+        command = f"ffmpeg -framerate {int(1/self.dt)} -i {pattern} -y {target}"
+        print(command)
+        print("Do you want to run it? y/N")
+        if input() == "y":
+            os.system(command)
+
+            
 
     def mean_TimeToGoal(self, normalize=True):
 
@@ -100,3 +129,10 @@ class Simulation():
 
         return mean / len(self.inactive_agents)
 
+
+
+    def optimal_TimeToGoal(self, agent):
+
+        env_local = Simulation(self.env, [agent], self.delta)
+        env_local.run()
+        return env_local.inactive_agents[0].end_time

@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d
 import numpy.linalg as la
 from tqdm import tqdm
-
+import warnings
+warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 
 class Wall():
 
@@ -165,14 +166,17 @@ class Environment():
         self.grid = np.stack([*np.meshgrid(self.x, self.y, indexing="ij")])
         self.field = np.zeros_like(self.grid)
 
-        for w in tqdm(self.walls):
-            self.field += w.I * (self.grid - w.project(self.grid)) / la.norm(self.grid - w.project(self.grid),
-                                                                             axis=0) ** 2 * np.exp(
-                -la.norm(self.grid - w.project(self.grid), axis=0) / w.R)
-        for o in tqdm(self.obstacles):
-            self.field += o.I * (self.grid - o.p[:, None, None]) / la.norm(self.grid - o.p[:, None, None],
-                                                                           axis=0) ** 2 * np.exp(
-                -la.norm(self.grid - o.p[:, None, None], axis=0) / o.R)
+        with tqdm(total=len(self.walls)+len(self.obstacles)) as pbar:
+            for w in self.walls:
+                self.field += w.I * (self.grid - w.project(self.grid)) / la.norm(self.grid - w.project(self.grid),
+                                                                                axis=0) ** 2 * np.exp(
+                    -la.norm(self.grid - w.project(self.grid), axis=0) / w.R)
+                pbar.update()
+            for o in self.obstacles:
+                self.field += o.I * (self.grid - o.p[:, None, None]) / la.norm(self.grid - o.p[:, None, None],
+                                                                            axis=0) ** 2 * np.exp(
+                    -la.norm(self.grid - o.p[:, None, None], axis=0) / o.R)
+                pbar.update()
 
         self.interp_x = interp2d(self.x[:], self.y[:], (self.field[0, :, :]).T, kind="quintic")
         self.interp_y = interp2d(self.x[:], self.y[:], (self.field[1, :, :]).T, kind="quintic")
@@ -182,7 +186,7 @@ class Environment():
         self.compiled = True
 
     def plot(self, plot_field=True, saturation_threshold=5, plot_arrows=True, plot_grid=False, show=True,
-             figsize=(25,12)):
+             figsize=(12,12)):
         """ Plots the environment
 
         Arguments:
