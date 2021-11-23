@@ -28,7 +28,6 @@ class Wall():
 
     def project(self, p):
         """ Projects a set of points onto the segment representing the wall.
-
         Arguments:
         p = numpy array of shape (2, N, M) with arbitrary N, M.
         Returns a numpy array of shape (2, N, M) where the value at [:, i, j] is
@@ -89,7 +88,6 @@ class Environment():
 
     def add_wall(self, wall):
         """ If the model has not been compiled yet, adds a wall to the environment.
-
         Arguments:
         wall = the instance of the class Wall to be added
         """
@@ -119,7 +117,6 @@ class Environment():
 
     def add_obstacle(self, obstacle):
         """ If the model has not been compiled yet, adds an obstacle to the environment.
-
         Arguments:
         obstacle = the instance of the class Obstacle to be added
         """
@@ -188,7 +185,6 @@ class Environment():
     def plot(self, plot_field=True, saturation_threshold=5, plot_arrows=True, plot_grid=False, show=True,
              figsize=(12,12)):
         """ Plots the environment
-
         Arguments:
         plot_field = whether to plot the force field intensity as an heatmap
         saturation_threshold = the value to which the field saturates (only
@@ -261,11 +257,9 @@ class Environment():
     def get_field(self, position):
         """ If the model has already been compiled, gets the field in a specific
             point interpolating between the points on the grid
-
         Arguments:
         position = a numpy array of shape (2,) containing the coordinates of the
             points where the field should be retrived
-
         Returns a numpy array of shape (2,) containing the field in the given point
         """
 
@@ -275,7 +269,6 @@ class Environment():
     def add_wall_from_polygonal(self, vertices, step_length, decay_length=None, intensity=None):
         """ If the model has not been compiled yet, adds a set of walls defined
             by the vertices of a polygonal chain.
-
         Arguments:
         vertices = a numpy array of shape (N, 2), with N arbitrary. Between each
             pair of consecutive points is the added a wall.
@@ -305,7 +298,6 @@ class Environment():
     def add_wall_from_curve(self, func, start, end, step_length, decay_length=None, intensity=None):
         """ If the model has not been compiled yet, adds a set of walls defined
             by 1D parametrization of a curve.
-
         Arguments:
         func = a function taking in input a numpy array with shape (N,) with
             arbitrary N, and returning a numpy array of shape (2, N).
