@@ -10,14 +10,20 @@ class Agent:
     ARRIVED = 1
     NOT_ARRIVED = 0
 
-    def __init__(self, env, start_time, position, goal_position, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1, sigma = 0.3, id=None):
+    def __init__(self, env, start_time, position, goal_position_start, goal_position_end, desired_speed=np.random.normal(1.34, 0.26), relaxation_time = 0.5, V = 2.1, sigma = 0.3, id=None):
 
         self.id = id
         self.env = env
         self.start_pos = np.copy(position)
         self.pos = [position]
 
-        self.goal_position = goal_position
+        self.goal_position_start = goal_position_start
+        self.goal_position_end = goal_position_end
+
+        if goal_position_start[0] != goal_position_end[0]:
+            self.goal_coeff = [(self.goal_position_end[1] - self.goal_position_start[1]) /
+                               (self.goal_position_end[0] - self.goal_position_start[0])]
+            self.goal_coeff.append(self.goal_position_end[1] - self.goal_position_end[0] * self.goal_coeff[0])
 
         self.relaxation_time = relaxation_time
         self.start_time = start_time
@@ -30,8 +36,27 @@ class Agent:
         self.sigma = sigma
         self.fluctuaction_deviation = 15
 
-        self.desired_direction = (self.goal_position - self.pos[-1]) / la.norm(self.goal_position - self.pos[-1])
+        self.desired_direction = (self.proj_to_goal() - self.pos[-1]) / la.norm(self.proj_to_goal() - self.pos[-1])
         return None
+
+    def proj_to_goal(self):
+
+        if self.goal_position_start[0] != self.goal_position_end[0]:
+            x = (self.pos[-1][0] + self.goal_coeff[0] * (self.pos[-1][1] - self.goal_coeff[1])) / \
+                (1 + self.goal_coeff[0] ** 2)
+            if x < min(self.goal_position_start[0], self.goal_position_end[0]):
+                x = min(self.goal_position_start[0], self.goal_position_end[0])
+            if x > max(self.goal_position_start[0], self.goal_position_end[0]):
+                x = max(self.goal_position_start[0], self.goal_position_end[0])
+            return np.array([x, self.goal_coeff[0] * x + self.goal_coeff[1]])
+
+        if self.goal_position_start[0] == self.goal_position_end[0]:
+            x = self.pos[-1][1]
+            if x < min(self.goal_position_start[1], self.goal_position_end[1]):
+                x = min(self.goal_position_start[1], self.goal_position_end[1])
+            if x > max(self.goal_position_start[1], self.goal_position_end[1]):
+                x = max(self.goal_position_start[1], self.goal_position_end[1])
+            return np.array([self.goal_position_start[0], x])
 
     def compute_force(self, active_agents, delta):
 
@@ -66,14 +91,15 @@ class Agent:
         else:
             self.speed.append(np.zeros(2))
 
-        if delta * la.norm(self.speed[-1]) >= la.norm(self.goal_position - self.pos[-1]) or la.norm(self.goal_position - self.pos[-1]) <= 0.2:
-            self.pos.append(self.goal_position)
+        #if delta * la.norm(self.speed[-1]) >= la.ngoal_position_endorm(self.goal_position - self.pos[-1]) or la.norm(self.goal_position - self.pos[-1]) <= 0.2:
+        if la.norm(self.pos[-1] - self.proj_to_goal()) <= delta * la.norm(self.speed[-1]):
+            self.pos.append(self.proj_to_goal())
             self.end_time = current_time
             return Agent.ARRIVED
 
         else:
             self.pos.append(self.pos[-1] + delta * self.speed[-1])
-            self.desired_direction = (self.goal_position - self.pos[-1]) / la.norm(self.goal_position - self.pos[-1])
+            self.desired_direction = (self.proj_to_goal() - self.pos[-1]) / la.norm(self.proj_to_goal() - self.pos[-1])
             return Agent.NOT_ARRIVED
 
     def plot_trajectory(self, fig, show=True):
@@ -81,6 +107,9 @@ class Agent:
         trajectory = np.array(self.pos)
 
         plt.plot(trajectory[:, 0], trajectory[:, 1], label=self.id)
+        if self.goal_position_start[0] != self.goal_position_end[0]:
+            plt.plot([self.goal_position_start[0], self.goal_position_end[0]],
+                     [self.goal_position_start[1], self.goal_position_end[1]], c="r")
 
         if show:
             plt.show()
