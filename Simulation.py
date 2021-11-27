@@ -4,12 +4,21 @@ from Agent import *
 import os
 from itertools import chain
 import warnings
-
 warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 from datetime import timedelta
 
 
 class Simulation():
+    """ Class accounting for the whole simulation.
+    Provides the add_agent function to add agents to the simulation
+    If the provided environment is not compiled, it will be compiled
+    automatically. The functions move and run implement the actual
+    evolution of the system. with plot and save_frames one can visualize
+    the simulated motion of the agents.
+    Arguments:
+    env = the environment in which the agents are going to move 
+    time_step = the timestep for the simulation 
+    """
 
     def __init__(self, env, time_step):
 
@@ -26,13 +35,21 @@ class Simulation():
             self.env.compile()
 
     def add_agent(self, agent):
+        """ Adds an agent to the simulation
+        Arguments:
+        agent = the instance of the class Agent to be added
+        """
         if agent.id is None:
             agent.id = f"a{self.agent_number + 1}"
         self.sleeping_agents.append(agent)
         self.agent_number += 1
 
     def move(self, replace=False):
-
+        """ Executes one step of the simulation
+        Arguments:
+        replace = if True, once the agent arrives to its target position,
+            a new one will enter the simulation
+        """
         self.arrived_number.append(self.arrived_number[-1])
 
         for a in range(len(self.active_agents)):
@@ -58,6 +75,13 @@ class Simulation():
                 self.active_agents.append(agent)
 
     def run(self, t_max=np.inf, replace=False):
+        """ Runs the simulation from time 0 to either t_max or
+        until all the agents arrived to their target positions.
+        Arguments:
+        t_max = the time limit of the simulation.
+        replace = if True, once the agent arrives to its target position,
+            a new one will enter the simulation
+        """
 
         while (self.agent_number - len(self.inactive_agents) != 0 and self.time <= (t_max - self.dt)):
 
@@ -72,6 +96,15 @@ class Simulation():
             self.time += self.dt
 
     def plot(self, plot_field=True, plot_arrows=False, plot_grid=False, plot_agents=True, show=True):
+        """ Plots the the trajectories of each agent in the simulation.
+        Arguments:
+        plot_field = whether to plot the force field intensity as an heatmap
+        plot_arrows = whether to draw the field as a vector
+        plot_grid = whether to plot the grid where the field has been computed
+        plot_agents = whether to plot the agents 
+        show = whether to show the plot
+        If show is set to true, returns None. Otherwise returns the figure instance
+        """
 
         fig = self.env.plot(plot_field=plot_field, plot_arrows=plot_arrows, plot_grid=plot_grid, show=False)
         if plot_agents:
@@ -85,6 +118,15 @@ class Simulation():
 
     def save_frames(self, plot_field=True, plot_arrows=False, plot_grid=False,
                     path=os.path.join(os.getcwd(), "animation")):
+        """ Saves the frames of the simulation. After all the frames have
+        been saved. Is prompted whether to join them in a video using ffmpeg
+        Arguments:
+        plot_field = whether to plot the force field intensity as an heatmap
+        plot_arrows = whether to draw the field as a vector
+        plot_grid = whether to plot the grid where the field has been computed
+        path = the path where to save the frames. Default is 
+            {{current working directory}}/animation
+        """
 
         N = int(self.time / self.dt)
         if not (os.path.exists(path) and os.path.isdir(path)):

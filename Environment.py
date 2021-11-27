@@ -7,7 +7,6 @@ import warnings
 warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 
 class Wall():
-
     """ A wall is an environmental item defined as a segment in the plane.
     Arguments:
     p1 = numpy array of shape (2,) containing the coordinates of the first point

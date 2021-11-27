@@ -4,9 +4,29 @@ import numpy.linalg as la
 import warnings
 warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 
-
 class Agent:
-
+    """ Class defining the behaviour of each agent in the simulation.
+    Provides the proj_to_goal and compute_force functions to account for
+    the environment where he is moving and the move function to perform an 
+    actual step of the simulation. The the function plot_trajectory plots
+    the path along which the agent has moved so far.
+    Arguments:
+    env = the environment in which the agent is going to move
+    start_time = the time the agent joins the simulation
+    position = the initial position of the agent
+    goal_position_start = the goal position of the agent is defined as a
+        segment (e.g. a door). Here is specified the first end of the segment
+    goal_position_end = the goal position of the agent is defined as a
+        segment (e.g. a door). Here is specified the second end of the segment
+    desired_speed = the ideal speed for the specific agent. Default is a random
+        speed distributed gaussian around 1.34, with a standard deviation of 0.26
+    relaxation_time = characteristic time which determines how quickly an agent 
+        changes his speed. Default is 0.5
+    V = a parameter used to compute the forces due to other agents. Default is 2.1
+    sigma = a parameter used to compute the forces due to other agents. Default is 0.3
+    id = a label for the specific agent. If None, the label "unknown" will be used.
+        Default is None
+    """
     ARRIVED = 1
     NOT_ARRIVED = 0
 
@@ -40,6 +60,10 @@ class Agent:
         return None
 
     def proj_to_goal(self):
+        """ Projects self's position onto the segment representing the target.
+        Returns a numpy array representing the projection of self's position
+        onto the segment representing the wall.
+        """
 
         if self.goal_position_start[0] != self.goal_position_end[0]:
             x = (self.pos[-1][0] + self.goal_coeff[0] * (self.pos[-1][1] - self.goal_coeff[1])) / \
@@ -59,6 +83,13 @@ class Agent:
             return np.array([self.goal_position_start[0], x])
 
     def compute_force(self, active_agents, delta):
+        """ Computes the force to which the agent is subject.
+        Arguments:
+        active_agents = a list containing all the other agents active in the 
+            simulation
+        delta = the timestep dt
+        Returns the resultant force on the agent
+        """
 
         self.F = (self.desired_speed * self.desired_direction - self.speed[-1]) / self.relaxation_time
         self.F += self.env.get_field(self.pos[-1])
@@ -81,7 +112,14 @@ class Agent:
         return self.F
 
     def move(self, active_agents, delta, current_time):
-
+        """ Computes the new position and velocity of the agent after one 
+        step of the simulation. 
+        Arguments:
+        active_agents = a list containing all the other agents active in the 
+            simulation
+        delta = the timestep dt
+        current_time = the current simulation time
+        """
         new_speed = self.speed[-1] + delta * self.compute_force(active_agents, delta)
         if la.norm(new_speed) != 0:
             if la.norm(new_speed) <= self.max_speed:
@@ -103,6 +141,12 @@ class Agent:
             return Agent.NOT_ARRIVED
 
     def plot_trajectory(self, fig, show=True):
+        """ Plots the path walked by the agent
+        Arguments:
+        fig = the pyplot figure object where to draw the trajectory
+        show = whether to show the plot. Default is True
+        If show is set to true, returns None. Otherwise returns the figure instance
+        """
 
         trajectory = np.array(self.pos)
 
