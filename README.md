@@ -1,8 +1,13 @@
 # Complex Social Systems: Modeling Agents, Learning and Games: 
 
-> * Group Name: The wlaker's group
-> * Group participants names: Battista, Piera; Biella, Alessandro; Ferradini, Carla Anais; Fioroni, Lorenzo; Guillemet, Vincent.
-> * Project Title: Modeling pedestrian flow in a crowded building
+> * Group Name: *The walker's group*
+> * Group participants names: 
+>   * Battista, Piera;
+>   * Biella, Alessandro;
+>   * Ferradini, Carla Anais;
+>   * Fioroni, Lorenzo;
+>   * Guillemet, Vincent.
+> * Project Title: *Modeling pedestrian flow in a crowded building*
 
 ## General Introduction
 
