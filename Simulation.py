@@ -7,7 +7,6 @@ import warnings
 warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 from datetime import timedelta
 
-
 class Simulation():
     """ Class accounting for the whole simulation.
     Provides the add_agent function to add agents to the simulation
@@ -135,19 +134,26 @@ class Simulation():
         os.system(f"rm {pattern}")
         print(f"Saving the frames of the animation in folder {path}")
 
+        fig = self.env.plot(plot_field=plot_field, plot_arrows=plot_arrows, plot_grid=plot_grid, show=False)
+        xy = []
+        ax = fig.gca()
+        points = plt.scatter([], [], animated=True)
+        bg = fig.canvas.copy_from_bbox(fig.bbox)
+        fig.canvas.blit(fig.bbox)
+        fig.canvas.draw()
         for i, t in tqdm(enumerate(np.linspace(0, self.time, N)), total=N):
-            fig = self.env.plot(plot_field=plot_field, plot_arrows=plot_arrows, plot_grid=plot_grid, show=False)
+            fig.canvas.restore_region(bg)
+            xy = []
             for a in chain(self.inactive_agents, self.active_agents):
 
                 zero = int(np.floor(a.start_time / self.dt))
                 if 0 <= i - zero < len(a.pos):
-                    plt.scatter(*a.pos[i - zero], label=f"Agent {a.id}")
-
-            plt.legend()
+                    xy.append([*a.pos[i - zero]])
+                    points.set_offsets(xy)
+                    ax.draw_artist(points)
             isec, fsec = divmod(round(t * 100), 100)
             plt.title(f"{timedelta(seconds=isec)}.{fsec:02.0f}")
             plt.savefig(os.path.join(path, f"frame_{i}.png"))
-            plt.close(fig)
 
         pattern = os.path.join(path, "frame_%01d.png")
         target = os.path.join(path, "Animation.mp4")
