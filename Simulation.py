@@ -109,7 +109,7 @@ class Simulation():
         if plot_agents:
             for a in self.inactive_agents:
                 fig = a.plot_trajectory(fig, show=False)
-        plt.legend()
+        # plt.legend()
         if show:
             plt.show()
         else:
