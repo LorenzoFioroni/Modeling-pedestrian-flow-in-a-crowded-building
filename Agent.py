@@ -54,7 +54,7 @@ class Agent:
 
         self.V = V
         self.sigma = sigma
-        self.fluctuaction_deviation = 15
+        self.fluctuaction_deviation = 30
 
         self.desired_direction = (self.proj_to_goal() - self.pos[-1]) / la.norm(self.proj_to_goal() - self.pos[-1])
         return None

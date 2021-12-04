@@ -159,7 +159,7 @@ class Simulation():
         target = os.path.join(path, "Animation.mp4")
         print(
             "All the frames have been generated. You can merge them in a video using ffmpeg with the following command:")
-        command = f"ffmpeg -framerate {int(1 / self.dt)} -i {pattern} -y {target}"
+        command = f"ffmpeg -framerate {int(1 / self.dt)} -i {pattern} -y -c:v libx264 -c:a aac -strict experimental -tune fastdecode -pix_fmt yuv420p {target}"
         print(command)
         print("Do you want to run it? y/N")
         if input() == "y":
