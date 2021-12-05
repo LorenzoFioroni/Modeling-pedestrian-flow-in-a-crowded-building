@@ -33,8 +33,8 @@ We thus did not take into account attraction phenomenons, panic phenomenons, gro
 ## Fundamental Questions
 Provided that the theory is done (in the paper we worked on). Provided that the numerical implementation of the theory is done (what we did, 
 the code is in the folder code). We asked the following questions.
->*-Is the model reality-like ? Does it shape well the behavior that people (agent) would have ?
->     *-What happens when two or four opposite flows of agent encounter (ETH-GUESS/other/no_obstacles) ?
+>*-Is the model reality-like ? Does it shape well the behavior that people (agent) would have ?;
+>     *-What happens when two or four opposite flows of agent encounter (ETH-GUESS/other/no_obstacles) ?;
 >*-In a specific setting, is it possible to use this model to improve the structure / shape of a room ?
 >     *-With two or four opposite flows of agent; Is it possible to shape the room in order to improve to mean time to arrival
 >     (ETH-GUESS/other/pillar_infrontof_exit and ETH-GUESS/other/wedge) ? 
