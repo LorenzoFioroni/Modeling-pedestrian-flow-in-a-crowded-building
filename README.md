@@ -15,8 +15,8 @@ Modeling the behaviour of pedestrians in a room with different environment confi
 
 ## The Model
 
-We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynamics- by Helbing Dirk and Molnar Péter. Essentially, each agent (1rst class) moves towards his/her goal in an environment (2nd class). The agent's movements are influenced by the environment and the presence of other agents, therefore he/she will experience a force resulting from hi/her perceptions. In particular, he/she will feel a repulsion from the walls and obstacles in the environment as well as from other agents.
-Once computed, these forces are integrated to get the speed of the agent, which integrated again gives its position as a function of time.
+We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynamics- by Helbing Dirk and Molnar Péter. Essentially, each agent (1rst class) moves towards his/her goal in an environment (2nd class). The agent's movements are influenced by the environment and the presence of other agents, therefore he/she will experience a force resulting from his/her perceptions. In particular, he/she will feel a repulsion from the walls and obstacles in the environment as well as from other agents.
+Once computed, these forces are integrated to get the speed of the agent, which integrated again gives his/her position as a function of time.
 The simulation (3rd class) makes several agents evolve in the same environment according to the previous scheme. We chose the hyperparameters 
 according to the advices provided at the end of the paper -Social force model for pedestrian dynamics-. For more information we suggest to read the report, available in this repository.
 
