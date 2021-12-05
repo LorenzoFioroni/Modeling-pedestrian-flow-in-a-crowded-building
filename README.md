@@ -22,24 +22,23 @@ according to the advices provided at the end of the paper -Social force model fo
 
 
 ## Fundamental Questions
-Provided that the theory is done (in the paper we worked on). Provided that the numerical implementation of the theory is done (what we did, 
-the code is in the folder code). We asked the following questions.
+Given the theoretical model, as described in the paper -Social force model for pedestrian dynamics-, and once the numerical simulation was implemented (in the code situated in the folder code). Our goal was to answer the following questions:
  
-> * Is the model reality-like ? Does it shape well the behavior that people (agent) would have ?
->   * What happens when two or four opposite flows of agent encounter (ETH-GUESS/other/no_obstacles) ?
-> * In a specific setting, is it possible to use this model to improve the structure / shape of a room ?
->   * With two or four opposite flows of agent; Is it possible to shape the room in order to improve to mean time to arrival
->     (ETH-GUESS/other/pillar_infrontof_exit and ETH-GUESS/other/wedge) ? 
->   * What is a best disposition of tables in a classroom (ETH-GUESS/other/classroom) ?
+> * Does the model describe correctly reality? Does it simulate realistically agents' behaviours?
+>   * What happens when two or four opposite flows of agent encounter (ETH-GESS/other/no_obstacles)?
+> * In a specific setting, is it possible to use this model in order to find the optimal configuration of objects in a room?
+>   * With two or four opposite flows of agent, is it possible to move these objects in order to improve to mean time to goal
+>     (ETH-GESS/other/pillar_infrontof_exit and ETH-GESS/other/wedge)? 
 > * What is the effect of having obstacles in a room (ETH-GUESS/other/grid and ETH-GUESS/other/grid_shifted and ETH-GUESS/other/random_obstacles) ?
+>   * What is the optimal configuation of tables in a classroom in an evacuation scenario (ETH-GUESS/other/classroom)?
+
 
 
 ## Expected Results
-We expect that the model, provided with a good choice of hyper-parameters, is a good representation of a normal case in reality (no panic, no group behavior, no attractive devices). The model has already been tested in the paper -Social force model for pedestrian dynamics- and the authors referenced it as a good representation of reality for their case study. 
+Assuming that the choice of hyper-parameters is good, we expect the model to describe well a normal scenarios (no panic, no group behaviours, no attractive devices). The model has already been tested in the paper -Social force model for pedestrian dynamics- and the authors referenced it as a good representation of reality for their case study. 
 
-We expect that the model can indeed be used in specific settings, in order to improve the structure of a path / room, as it has been discussed in the lecture number 3 of the course -Complex Social Systems: Modeling Agents, Learning, and Games HS2021-. In particular we expect that adding pillars in front of exits will help "regularize" the flow of agent and thus reduce the mean optimal time to arrival, the measure of performance we used. Nevertheless we also expect our model to be very sensitive to the choice of hyperparameters and that some agents will act unaturally (eg. if there are two exits, one closest but cloged and the other far away but free).
+We expect that the model can indeed be used in specific settings, in order to improve the structure of a path / room, as it has been discussed in the lecture number 3 of the course -Complex Social Systems: Modeling Agents, Learning, and Games HS2021-. In particular we expect that adding pillars in front of exits will help "regularise" the flow of agent and thus reduce the mean optimal time to goal, the measure of performance we used. Nevertheless, we also expect our model to be very sensitive to the choice of hyperparameters and that some agents will act unaturally (eg. if there are two exits, one closest but cloged and the other far away but free).
 
-Finally we expect that having obstacles in the room will make the mean optimal time to arrival increase. Moreover this augmentation should heavily depend on how the obstacles are displayed in the room.
 
 ## References 
 
