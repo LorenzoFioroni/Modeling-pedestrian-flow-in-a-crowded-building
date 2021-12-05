@@ -4,20 +4,21 @@ import numpy.linalg as la
 import warnings
 warnings.filterwarnings("ignore", message="FixedFormatter should only be used together with FixedLocator")
 
+
 class Agent:
     """ Class defining the behaviour of each agent in the simulation.
     Provides the proj_to_goal and compute_force functions to account for
     the environment where he is moving and the move function to perform an 
-    actual step of the simulation. The the function plot_trajectory plots
+    actual step of the simulation. The function plot_trajectory plots
     the path along which the agent has moved so far.
     Arguments:
     env = the environment in which the agent is going to move
     start_time = the time the agent joins the simulation
     position = the initial position of the agent
     goal_position_start = the goal position of the agent is defined as a
-        segment (e.g. a door). Here is specified the first end of the segment
+        segment (e.g. a door). Here is specified the first endpoint of the segment
     goal_position_end = the goal position of the agent is defined as a
-        segment (e.g. a door). Here is specified the second end of the segment
+        segment (e.g. a door). Here is specified the second endpoint of the segment
     desired_speed = the ideal speed for the specific agent. Default is a random
         speed distributed gaussian around 1.34, with a standard deviation of 0.26
     relaxation_time = characteristic time which determines how quickly an agent 
@@ -25,8 +26,9 @@ class Agent:
     V = a parameter used to compute the forces due to other agents. Default is 2.1
     sigma = a parameter used to compute the forces due to other agents. Default is 0.3
     id = a label for the specific agent. If None, the label "unknown" will be used.
-        Default is None
+        (Default is None)
     """
+
     ARRIVED = 1
     NOT_ARRIVED = 0
 
@@ -54,20 +56,18 @@ class Agent:
 
         self.V = V
         self.sigma = sigma
-        self.fluctuaction_deviation = 15
+        self.fluctuaction_deviation = 30
 
         self.desired_direction = (self.proj_to_goal() - self.pos[-1]) / la.norm(self.proj_to_goal() - self.pos[-1])
         return None
 
     def proj_to_goal(self):
-        """ Projects self's position onto the segment representing the target.
-        Returns a numpy array representing the projection of self's position
-        onto the segment representing the wall.
+        """ Projects the agent's position onto the segment representing the target.
+        Returns a numpy array with the coordinates of the projections
         """
 
         if self.goal_position_start[0] != self.goal_position_end[0]:
-            x = (self.pos[-1][0] + self.goal_coeff[0] * (self.pos[-1][1] - self.goal_coeff[1])) / \
-                (1 + self.goal_coeff[0] ** 2)
+            x = (self.pos[-1][0] + self.goal_coeff[0] * (self.pos[-1][1] - self.goal_coeff[1]))/(1 + self.goal_coeff[0] ** 2)
             if x < min(self.goal_position_start[0], self.goal_position_end[0]):
                 x = min(self.goal_position_start[0], self.goal_position_end[0])
             if x > max(self.goal_position_start[0], self.goal_position_end[0]):
@@ -85,8 +85,7 @@ class Agent:
     def compute_force(self, active_agents, delta):
         """ Computes the force to which the agent is subject.
         Arguments:
-        active_agents = a list containing all the other agents active in the 
-            simulation
+        active_agents = a list containing all the other agents active in the simulation
         delta = the timestep dt
         Returns the resultant force on the agent
         """
@@ -102,8 +101,7 @@ class Agent:
             norm_r_ = la.norm(r - v_)
             b = np.sqrt((norm_r + norm_r_) ** 2 - (v * delta) ** 2) / 2
 
-            self.F += (r * (2 + (norm_r_ / norm_r) + (norm_r / norm_r_)) - v_ * (1 + (norm_r / norm_r_))) \
-                      * np.exp(-b / agent.sigma) * self.V / (b * agent.sigma * 4)
+            self.F += (r * (2 + (norm_r_ / norm_r) + (norm_r / norm_r_)) - v_ * (1 + (norm_r / norm_r_)))* np.exp(-b / agent.sigma) * self.V / (b * agent.sigma * 4)
 
 
         theta = np.radians(np.random.normal(scale=self.fluctuaction_deviation))
@@ -115,11 +113,11 @@ class Agent:
         """ Computes the new position and velocity of the agent after one 
         step of the simulation. 
         Arguments:
-        active_agents = a list containing all the other agents active in the 
-            simulation
+        active_agents = a list containing all the other agents active in the simulation
         delta = the timestep dt
         current_time = the current simulation time
         """
+
         new_speed = self.speed[-1] + delta * self.compute_force(active_agents, delta)
         if la.norm(new_speed) != 0:
             if la.norm(new_speed) <= self.max_speed:
@@ -129,7 +127,6 @@ class Agent:
         else:
             self.speed.append(np.zeros(2))
 
-        #if delta * la.norm(self.speed[-1]) >= la.ngoal_position_endorm(self.goal_position - self.pos[-1]) or la.norm(self.goal_position - self.pos[-1]) <= 0.2:
         if la.norm(self.pos[-1] - self.proj_to_goal()) <= delta * la.norm(self.speed[-1]):
             self.pos.append(self.proj_to_goal())
             self.end_time = current_time
@@ -160,7 +157,6 @@ class Agent:
             return None
         else:
             return fig
-
 
     def __repr__(self):
         return self.id or "unknown"
