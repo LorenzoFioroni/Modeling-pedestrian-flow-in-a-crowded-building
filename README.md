@@ -11,17 +11,14 @@
 
 ## General Introduction
 
-Modeling the behaviour of pedestrians in a room with different environment configurations is crucial for the safe evacuation and movement inside of it. Building safety is one of the fundamental requirements when creating the blue print of an architectural project. This concept lead us to wanting to investigate the best configuration for a classroom with 12 desks and 24 agents, simulating a real-life high school. A large number of models have been used to investigate the movements of pedestrians and between them we chose to test the microscopic Social Force Model, to better simulate a small number of students evacuating the room.  
+Modeling the behaviour of pedestrians in a room with different environment configurations is crucial for the safe evacuation and movement inside of it. Building safety is one of the fundamental requirements when creating the blue print of an architectural project. This concept lead us to investigate the best configuration for the evacuation of a classroom with 12 desks and 24 agents, simulating a real-life high school. A large number of models have been used to investigate the movements of pedestrians and between them we chose to test the microscopic Social Force Model, to better simulate a small number of students evacuating the room.  
 
 ## The Model
 
-We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynamics- by Helbing Dirk and Molnar Péter. The essential is that each agent (1rst class) evolves in an environment (2nd class), 
-provided with rules that are defined by forces acting on each agent. The forces are will force, repulsion from environment structures, 
-repulsion from other agents. These forces are integrated to get the speed of the agent, which integrated provides its position against time.
-The simulation (3rd class) make several agents evolve in the same environment according to the previous scheme. We chose the hyperparameters 
-according the advices provided at the end of the paper -Social force model for pedestrian dynamics-. For more information one can have a look to the report, available in this repositery.
-
-We thus did not take into account attraction phenomenons, panic phenomenons, group phenomenons.
+We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynamics- by Helbing Dirk and Molnar Péter. Essentially, each agent (1rst class) moves towards his/her goal in an environment (2nd class). The agent's movements are influenced by the environment and the presence of other agents, therefore he/she will experience a force resulting from hi/her perceptions. In particular, he/she will feel a repulsion from the walls and obstacles in the environment as well as from other agents.
+Once computed, these forces are integrated to get the speed of the agent, which integrated again gives its position as a function of time.
+The simulation (3rd class) makes several agents evolve in the same environment according to the previous scheme. We chose the hyperparameters 
+according to the advices provided at the end of the paper -Social force model for pedestrian dynamics-. For more information we suggest to read the report, available in this repository.
 
 
 ## Fundamental Questions
