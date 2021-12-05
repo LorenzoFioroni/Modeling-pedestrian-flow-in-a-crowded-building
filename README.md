@@ -42,7 +42,7 @@ the code is in the folder code). We asked the following questions.
 
 
 ## Expected Results
-We expect that the model, provided with a good choice of hyper-parameters, is a good representation of a normal case in reality (no panic, no group behavior, no attractive devices). The model has already been tested in the paper -Social force model for pedestrian dynamics- and we the authors referenced it as a good representation of reality for their case study. 
+We expect that the model, provided with a good choice of hyper-parameters, is a good representation of a normal case in reality (no panic, no group behavior, no attractive devices). The model has already been tested in the paper -Social force model for pedestrian dynamics- and the authors referenced it as a good representation of reality for their case study. 
 
 We expect that the model can indeed be used in specific settings, in order to improve the structure of a path / room, as it has been discussed in the lecture number 3 of the course -Complex Social Systems: Modeling Agents, Learning, and Games HS2021-. In particular we expect that adding pillars in front of exits will help "regularize" the flow of agent and thus reduce the mean optimal time to arrival, the measure of performance we used. Nevertheless we also expect our model to be very sensitive to the choice of hyperparameters and that some agents will act unaturally (eg. if there are two exits, one closest but cloged and the other far away but free).
 
