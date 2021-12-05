@@ -25,12 +25,11 @@ according to the advices provided at the end of the paper -Social force model fo
 Given the theoretical model, as described in the paper -Social force model for pedestrian dynamics-, and once the numerical simulation was implemented (in the code situated in the folder code). Our goal was to answer the following questions:
  
 > * Does the model describe correctly reality? Does it simulate realistically agents' behaviours?
->   * What happens when two or four opposite flows of agent encounter (ETH-GESS/other/no_obstacles)?
+> * What happens when two or four opposite flows of agent encounter (ETH-GESS/other/no_obstacles)?
 > * In a specific setting, is it possible to use this model in order to find the optimal configuration of objects in a room?
->   * With two or four opposite flows of agent, is it possible to move these objects in order to improve to mean time to goal
->     (ETH-GESS/other/pillar_infrontof_exit and ETH-GESS/other/wedge)? 
+> * With two or four opposite flows of agent, is it possible to move these objects in order to improve to mean time to goal (ETH-GESS/other/pillar_infrontof_exit and ETH-GESS/other/wedge)? 
 > * What is the effect of having obstacles in a room (ETH-GUESS/other/grid and ETH-GUESS/other/grid_shifted and ETH-GUESS/other/random_obstacles) ?
->   * What is the optimal configuation of tables in a classroom in an evacuation scenario (ETH-GUESS/other/classroom)?
+> * What is the optimal configuation of tables in a classroom in an evacuation scenario (ETH-GUESS/other/classroom)?
 
 
 
