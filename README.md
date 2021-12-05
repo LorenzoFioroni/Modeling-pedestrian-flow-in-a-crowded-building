@@ -19,13 +19,11 @@
 
 ## The Model
 
-We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynam-
-ics- by Helbing Dirk and Molnar Péter. The essential is that each agent (1rst class) evolves in an environment (2nd class), 
+We implement numerically the agend-based model developped in the paper -Social force model for pedestrian dynamics- by Helbing Dirk and Molnar Péter. The essential is that each agent (1rst class) evolves in an environment (2nd class), 
 provided with rules that are defined by forces acting on each agent. The forces are will force, repulsion from environment structures, 
 repulsion from other agents. These forces are integrated to get the speed of the agent, which integrated provides its position against time.
 The simulation (3rd class) make several agents evolve in the same environment according to the previous scheme. We chose the hyperparameters 
-according the advices provided at the end of the paper -Social force model for pedestrian dynam-
-ics-.
+according the advices provided at the end of the paper -Social force model for pedestrian dynamics-. For more information one can have a look to the report, available in this repositery.
 
 We thus did not take into account attraction phenomenons, panic phenomenons, group phenomenons.
 
@@ -44,9 +42,11 @@ the code is in the folder code). We asked the following questions.
 
 
 ## Expected Results
+We expect that the model, provided with a good choice of hyper-parameters, is a good representation of a normal case in reality (no panic, no group behavior, no attractive devices). The model has already been tested in the paper -Social force model for pedestrian dynamics- and we the authors referenced it as a good representation of reality for their case study. 
 
-(What are the answers to the above questions that you expect to find before starting your research?)
+We expect that the model can indeed be used in specific settings, in order to improve the structure of a path / room, as it has been discussed in the lecture number 3 of the course -Complex Social Systems: Modeling Agents, Learning, and Games HS2021-. In particular we expect that adding pillars in front of exits will help "regularize" the flow of agent and thus reduce the mean optimal time to arrival, the measure of performance we used. Nevertheless we also expect our model to be very sensitive to the choice of hyperparameters and that some agents will act unaturally (eg. if there are two exits, one closest but cloged and the other far away but free).
 
+Finally we expect that having obstacles in the room will make the mean optimal time to arrival increase. Moreover this augmentation should heavily depend on how the obstacles are displayed in the room.
 
 ## References 
 
