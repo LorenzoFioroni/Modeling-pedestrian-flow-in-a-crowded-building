@@ -9,7 +9,7 @@ from Simulation import *
 
 env = Environment(discretization_length=0.1)
 
-mode=[4, 5]
+mode=[2, 5]
 ## fst int: number of exits                     base case: 1
 ## snd int: obstacle
 ##              0 - no obstacles            <-  base case
@@ -76,36 +76,36 @@ for i in range(50):
     if mode[0] == 2:
     ## 2 exits ##
         if np.random.rand()<0.5:
-            target0 = np.array([10, 4.1])
-            target1 = np.array([10, 5.9])
+            target0 = np.array([10, 4.0])
+            target1 = np.array([10, 6.0])
             start = np.array([0, np.random.uniform(4.1, 5.9)])
         else:
-            target0 = np.array([0, 4.1])
-            target1 = np.array([0, 5.9])
+            target0 = np.array([0, 4.0])
+            target1 = np.array([0, 6.0])
             start = np.array([10, np.random.uniform(4.1, 5.9)])
     elif mode[0] == 4:
     ## 4 exits ##
         r = np.random.rand()
         if r < 0.25:
-            target0 = np.array([10, 4.1])
-            target1 = np.array([10, 5.9])
+            target0 = np.array([10, 4.0])
+            target1 = np.array([10, 6.0])
             start = np.array([0, np.random.uniform(4.1, 5.9)])
         elif r < 0.5:
-            target0 = np.array([4.1, 10])
-            target1 = np.array([5.9, 10])
+            target0 = np.array([4.0, 10])
+            target1 = np.array([6.0, 10])
             start = np.array([np.random.uniform(4.1, 5.9), 0])
         elif r < 0.75:
-            target0 = np.array([0, 4.1])
-            target1 = np.array([0, 5.9])
+            target0 = np.array([0, 4.0])
+            target1 = np.array([0, 6.0])
             start = np.array([10, np.random.uniform(4.1, 5.9)])
         else:
-            target0 = np.array([4.1, 0])
-            target1 = np.array([5.9, 0])
+            target0 = np.array([4.0, 0])
+            target1 = np.array([6.0, 0])
             start = np.array([np.random.uniform(4.1, 5.9), 10])
     else:
     ## 1 exit ##
-        target0 = np.array([10, 4.1])
-        target1 = np.array([10, 5.9])
+        target0 = np.array([10, 4.0])
+        target1 = np.array([10, 6.0])
         start = np.array([0, np.random.uniform(4.1, 5.9)])
     sim.add_agent(Agent(env, np.abs(np.random.uniform(0, 10)), start, target0, target1))
 
@@ -114,11 +114,11 @@ for i in range(50):
 
 sim.run(t_max = 60)
 
-print(f"Mean time to goal: {sim.mean_TimeToGoal(normalize=False)}")
+print(f"Mean time to goal: {sim.mean_TimeToGoal()}")
 print(f"Times of arrival: {sim.arrived_number}")
 
-sim.plot(plot_field = False)
 sim.plot(plot_agents = False)
+sim.plot(plot_field = False)
 
 # Generating animation frames
 
