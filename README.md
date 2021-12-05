@@ -11,11 +11,7 @@
 
 ## General Introduction
 
-
-
-(States your motivation clearly: why is it important / interesting to solve this problem?)
-(Add real-world examples, if any)
-(Put the problem into a historical context, from what does it originate? Are there already some proposed solutions?)
+Modeling the behaviour of pedestrians in a room with different environment configurations is crucial for the safe evacuation and movement inside of it. Building safety is one of the fundamental requirements when creating the blue print of an architectural project. This concept lead us to wanting to investigate the best configuration for a classroom with 12 desks and 24 agents, simulating a real-life high school. A large number of models have been used to investigate the movements of pedestrians and between them we chose to test the microscopic Social Force Model, to better simulate a small number of students evacuating the room.  
 
 ## The Model
 
@@ -50,10 +46,10 @@ Finally we expect that having obstacles in the room will make the mean optimal t
 
 ## References 
 
-(Add the bibliographic references you intend to use)
-(Explain possible extension to the above models)
-(Code / Projects Reports of the previous year)
+The primary reference used in this project, from which the model is taken, is the following:
+Helbing, Dirk; Molnar, Peter: Social force model for pedestrian dynamics. In:Physical Review E51 (1995), May, Nr. 5, S. 4282–4286. – ISSN 1095-3787.
 
+A full list of all the references used can be found in the report.
 
 ## Research Methods
 
